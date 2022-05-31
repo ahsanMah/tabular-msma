@@ -10,9 +10,9 @@ class SimpleNet(nn.Module):
 
         self.seq_modules = nn.Sequential(
             nn.Linear(input_dims, hidden_dim),
-            nn.Mish(),
+            nn.ELU(),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.Mish(),
+            nn.ELU(),
             nn.Linear(hidden_dim, input_dims),
         )
 
@@ -23,6 +23,9 @@ class SimpleNet(nn.Module):
         if isinstance(module, nn.Linear):
             nn.init.kaiming_uniform_(module.weight.data)
 
+            if module.bias is not None:
+                module.bias.data.zero_()
+
     def forward(self, x):
-        x = self.modules(x)
+        x = self.seq_modules(x)
         return x
