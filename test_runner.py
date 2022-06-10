@@ -9,11 +9,13 @@ import torch
 import datasets
 from models.simple_nn import SimpleNet
 from torch.utils.data import DataLoader
+from pytorch_lightning.profiler import PyTorchProfiler
+
+from configs import simple_dsm_config as config_builder
 
 plt.rcParams["figure.figsize"] = (10, 5)
 plt.rcParams["figure.dpi"] = 110
 
-from pytorch_lightning.profiler import PyTorchProfiler
 
 if __name__ == "__main__":
 
@@ -24,12 +26,7 @@ if __name__ == "__main__":
     print("MPS found:", torch.backends.mps.is_available())
 
     device = torch.device("cpu")
-    config = ml_collections.ConfigDict()
-    config.dataset = "credit_fraud"
-    config.scale = 0.5
-    config.input_dims = 29
-    config.reduce_op = "mean"
-    # config.hidden_dim = 256
+    config = config_builder.get_default_configs()
 
     # Load data
     X_train, (X_val_in, X_val_out), (X_test_in, X_test_out) = datasets.build_dataset(
